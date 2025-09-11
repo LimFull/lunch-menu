@@ -56,7 +56,6 @@ export default function Menu() {
             }
             
             setMenuData(data);
-            console.log('메뉴 데이터:', data);
             setLoading(false);
             
           } catch (error) {

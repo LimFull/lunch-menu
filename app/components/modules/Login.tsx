@@ -14,8 +14,6 @@ function Login() {
   const [currentPassword, setCurrentPassword] = useState('');
   const router = useRouter();
   const autoLoginRef = useRef(false);
-
-  
   
   const handleLogin = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
@@ -40,13 +38,10 @@ function Login() {
 
   
   const autoLogin = useCallback(async () => {
-    console.log('autoLogin', user.isAutoLogin, autoLoginRef.current);
     if (user.isAutoLogin && !autoLoginRef.current) {
       if (!user.id || !user.wmonid) {
-        console.log("자동로그인 조건 불만족", user.id,"wmonid", user.wmonid);
         return;
       }
-      console.log("자동로그인 시작");
       autoLoginRef.current = true;
       
       const response = await fetch('/api/autoLogin', {
@@ -59,12 +54,10 @@ function Login() {
         const data = await response.json();
 
         const cookies = parseCookie(data.cookie);
-        console.log('자동로그인 cookies', cookies);
         setUser((prev:User) => ({...prev, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, wmonid:cookies?.WMONID?.value??prev.wmonid, appInfo:cookies?.appInfo?.value??prev.appInfo }));
         router.push('/menu');
       }
       else { 
-        console.log('자동로그인 실패', response);
         const data = await response.json();
       }
 
