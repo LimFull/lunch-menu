@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import useUserContext from "../hooks/useUserContext";
 import MenuDetail from "../components/modules/MenuDetail";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
     mealNm: string;
@@ -22,7 +23,8 @@ export default function Menu() {
     const [menuData, setMenuData] = useState<MenuData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { user } = useUserContext();
+    const { user, setUser } = useUserContext();
+    const router = useRouter();
   
     const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4)
 console.log('lunchMenus', lunchMenus);
@@ -63,6 +65,10 @@ console.log('lunchMenus', lunchMenus);
             setLoading(false);
             setError('메뉴 데이터 로드 실패: ' + (error instanceof Error ? error.message : String(error)));
             console.error('API 호출 오류:', error);
+            setUser({});
+            setTimeout(() => {
+              router.replace('/');
+            })
           }
         };
     
