@@ -5,15 +5,21 @@ import { useEffect, useLayoutEffect, useState } from "react";
 
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>({});
+
+  console.log("ClientLayout user", user);
+  
   useEffect(() => {
+    console.log("set localsave user", user);
     localStorage.setItem('user', JSON.stringify(user));
   }, [user, setUser]);
 
   useLayoutEffect(() => {
     const user = localStorage.getItem('user');
+
+    console.log("get localsave user", user);
     
     if (user) {
-      setUser(JSON.parse(user));
+      setUser((prev) => ({...prev, ...JSON.parse(user)}));
     }
   }, []);
   

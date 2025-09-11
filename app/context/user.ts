@@ -9,6 +9,7 @@ export interface User {
   trmlTokenVal?: string;
   wmonid?: string;
   mblctfSessionidPrd?: string;
+  isAutoLogin?: boolean;
 }
 
 export const UserContext = createContext({
