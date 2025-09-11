@@ -12,6 +12,7 @@ function Login() {
   const { user, setUser } = useUserContext();
   const [currentId, setCurrentId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
+  const isInitial = useRef(false);
   const router = useRouter();
   const autoLoginRef = useRef(false);
   
@@ -66,8 +67,17 @@ function Login() {
   }, [user.id, user.isAutoLogin, currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, user.wmonid, setUser]);
 
   useEffect(() => {
-    autoLogin();
+    if (!isInitial.current) {
+      autoLogin();
+    }
+    
   }, [user.isAutoLogin]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      isInitial.current = true;
+    }, 1000);
+  }, []);
 
 // 자동로그인 체크박스
   return (
