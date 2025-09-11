@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import useUserContext from "../hooks/useUserContext";
+import MenuDetail from "../components/modules/MenuDetail";
 
 interface MenuItem {
     mealNm: string;
@@ -24,7 +25,7 @@ export default function Menu() {
     const { user } = useUserContext();
   
     const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4)
-
+console.log('lunchMenus', lunchMenus);
 
     useEffect(() => {
         if (!user.wmonid || !user.mblctfSessionidPrd) {
@@ -91,18 +92,26 @@ export default function Menu() {
         {menuData && (
           <div className="bg-white shadow-md rounded-lg p-6">
             <h2 className="text-lg font-semibold mb-4">오늘의 메뉴</h2>
-            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {
                 lunchMenus?.map((v: MenuItem)=> (
-                  <div key={v?.dispNm}>
-                    <h3 className="text-lg font-semibold mb-2">{v?.dispNm}</h3>
-                    <Image src={`${v?.imgPath ? `https://hcafe.hgreenfood.com${v.imgPath}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png'}`} alt={v?.dispNm} width={200} height={200} />
-                    <p>{`${v?.totCaloryQt} kcal`}</p>
-                    <br/>
+                  <div key={v?.dispNm} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex flex-col items-start text-left">
+                      <h3 className="text-lg font-semibold mb-3 text-gray-800">{v?.dispNm}</h3>
+                      <Image 
+                        src={`${v?.imgPath ? `https://hcafe.hgreenfood.com${v.imgPath}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png'}`} 
+                        alt={v?.dispNm} 
+                        width={200} 
+                        height={200}
+                        className="rounded-lg object-cover mb-3"
+                      />
+                      <p className="text-lg font-medium mb-4">{`${v?.totCaloryQt} kcal`}</p>
+                      <MenuDetail menu={v} />
+                    </div>
                   </div>
                 ))
               }
-            </pre>
+            </div>
           </div>
         )}
       </div>

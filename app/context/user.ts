@@ -10,6 +10,7 @@ export interface User {
   wmonid?: string;
   mblctfSessionidPrd?: string;
   isAutoLogin?: boolean;
+  appInfo?: string;
 }
 
 export const UserContext = createContext({

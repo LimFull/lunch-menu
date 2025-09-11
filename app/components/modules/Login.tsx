@@ -28,7 +28,7 @@ function Login() {
       const data = await response.json();
       const cookies = parseCookie(data.cookie);
       
-      setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:currentId, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd }));
+      setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:currentId, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, appInfo:cookies?.appInfo?.value??prev.appInfo }));
       router.push('/menu');
     } else { 
       const data = await response.json();
