@@ -7,6 +7,7 @@ import { parseCookie } from "../utils/cookie";
 import { User } from "../context/user";
 import { useRouter } from "next/navigation";
 import { usePowerAutoLoginContext } from "../context/powerAutoLogin";
+import Cookies from 'js-cookie';
 
 
 
@@ -16,10 +17,10 @@ export function usePowerAutoLogin() {
     const router = useRouter();
 
   const handleAutoLogin = useCallback(async () => {
-    const isPowerAutoLoginLocal = localStorage.getItem('isPowerAutoLogin');
-    const powerLoginUserDataLocal = JSON.parse(localStorage.getItem('powerAutoLoginUserData')??'{}');
+    const isPowerAutoLoginLocal = Cookies.get('isPowerAutoLogin');
+    const powerLoginUserDataLocal = JSON.parse(Cookies.get('powerAutoLoginUserData') ?? '{}');
 
-    if (isPowerAutoLoginLocal != 'true' || !powerLoginUserDataLocal.id || !powerLoginUserDataLocal.pwd) {
+    if (isPowerAutoLoginLocal !== 'true' || !powerLoginUserDataLocal.id || !powerLoginUserDataLocal.pwd) {
     return;
     }
 
@@ -44,11 +45,19 @@ export function usePowerAutoLogin() {
 
 
   const setIsPowerAutoLoginLocal = useCallback((isPowerAutoLogin: boolean) => {
-    localStorage.setItem('isPowerAutoLogin', isPowerAutoLogin ? 'true' : 'false');
-  }, [setIsPowerAutoLogin]);
+    if (isPowerAutoLogin) {
+      Cookies.set('isPowerAutoLogin', 'true', { expires: undefined });
+    } else {
+      Cookies.remove('isPowerAutoLogin');
+    }
+  }, []);
 
   const setPowerAutoLoginUserDataLocal = useCallback((powerAutoLoginUserData: PowerAutoLoginUserData) => {
-    localStorage.setItem('powerAutoLoginUserData', JSON.stringify(powerAutoLoginUserData));
+    if (powerAutoLoginUserData.id && powerAutoLoginUserData.pwd) {
+      Cookies.set('powerAutoLoginUserData', JSON.stringify(powerAutoLoginUserData), { expires: undefined });
+    } else {
+      Cookies.remove('powerAutoLoginUserData');
+    }
   }, []);
 
 

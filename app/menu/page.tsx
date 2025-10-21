@@ -35,7 +35,7 @@ console.log('lunchMenus', lunchMenus);
 
     useEffect(() => {
         if (!user.wmonid || !user.mblctfSessionidPrd) {
-          return;
+          throw new Error('login first');
         }
       
         // API 호출 함수
@@ -69,7 +69,6 @@ console.log('lunchMenus', lunchMenus);
             
             setMenuData(data);
             setLoading(false);
-            
           } catch (error) {
             setLoading(false);
             setError('메뉴 데이터 로드 실패: ' + (error instanceof Error ? error.message : String(error)));
