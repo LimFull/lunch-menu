@@ -48,6 +48,9 @@ export async function POST(request: Request) {
         body: JSON.stringify({ appInfo: { osDvCd, userCurrAppVer, mobiPhTrmlId, trmlTokenVal, id:'', pw:'' }, autoLogin: id }),
     });
 
+    console.log("자동로그인 인풋", id, osDvCd, userCurrAppVer, mobiPhTrmlId, trmlTokenVal, wmonid);
+    console.log("자동로그인 결과", response1.ok, response1.status, response1.statusText, response1);
+
     if (!response1.ok) {
         return NextResponse.json({ error: '자동로그인 실패했습니다.' }, { status: 400 });
             
@@ -90,8 +93,12 @@ export async function POST(request: Request) {
     const response2 = await fetch('https://hcafe.hgreenfood.com/api/common/setCookie.do', {
         method: 'POST',
         headers: headers2,
-        body: JSON.stringify({ appInfo: { osDvCd, userCurrAppVer, mobiPhTrmlId, trmlTokenVal, id:'', pw:'' }, autoLogin: id }),
+        // body: JSON.stringify({ appInfo: { osDvCd, userCurrAppVer, mobiPhTrmlId, trmlTokenVal, id:'', pw:'' }, autoLogin: id }),
+        body: JSON.stringify({ appInfo: { osDvCd, userCurrAppVer, trmlTokenVal, id:'', pw:'' }, autoLogin: id }),
     });
+
+    console.log("자동로그인 인풋2",  osDvCd, userCurrAppVer, mobiPhTrmlId, trmlTokenVal, id);
+    console.log("자동로그인 결과2", response2.ok, response2.status, response2.statusText, response2);
     
     if (!response2.ok) {
         return NextResponse.json({ error: '자동로그인 실패했습니다.' }, { status: 400 });
