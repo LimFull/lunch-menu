@@ -5,6 +5,8 @@ import Image from "next/image";
 import useUserContext from "../hooks/useUserContext";
 import MenuDetail from "../components/modules/MenuDetail";
 import { useRouter } from "next/navigation";
+import { usePowerAutoLogin } from "../hooks/usePowerAutoLogin";
+import { usePowerAutoLoginContext } from "../context/powerAutoLogin";
 
 interface MenuItem {
     mealNm: string;
@@ -25,6 +27,8 @@ export default function Menu() {
     const [error, setError] = useState<string | null>(null);
     const { user, setUser } = useUserContext();
     const router = useRouter();
+    const { isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLoginLocal, setPowerAutoLoginUserDataLocal } = usePowerAutoLogin();
+    
   
     const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4)
 console.log('lunchMenus', lunchMenus);
@@ -57,6 +61,11 @@ console.log('lunchMenus', lunchMenus);
             if (data.error) {
               throw new Error(data.error);
             }
+            
+            if (isPowerAutoLogin) {
+              setIsPowerAutoLoginLocal(true);
+              setPowerAutoLoginUserDataLocal({ id: powerAutoLoginUserData.id, pwd: powerAutoLoginUserData.pwd });
+            } 
             
             setMenuData(data);
             setLoading(false);

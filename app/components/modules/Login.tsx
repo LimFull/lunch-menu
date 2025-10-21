@@ -7,25 +7,40 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { parseCookie } from "@/app/utils/cookie";
 import { User } from "@/app/context/user";
+import { usePowerAutoLogin } from "@/app/hooks/usePowerAutoLogin";
+import { Tooltip } from "./Tooltip";
 
 function Login() {
   const { user, setUser } = useUserContext();
+  const { powerAutoLogin, isPowerAutoLogin, setIsPowerAutoLogin, setPowerAutoLoginUserData } = usePowerAutoLogin();
   const [currentId, setCurrentId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const isInitial = useRef(false);
   const router = useRouter();
   const autoLoginRef = useRef(false);
+
+  console.log("isPowerAutoLogin", isPowerAutoLogin);
   
   const handleLogin = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
 
+    console.log("isPowerAutoLogin", isPowerAutoLogin, currentId, currentPassword);
+
+    
     const response = await fetch('/api/login', {
       method: 'POST',
+
       body: JSON.stringify({ id: currentId, password: currentPassword, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal }),
     });
     
 
     if (response.ok) {
+      if (isPowerAutoLogin) {
+        setPowerAutoLoginUserData({ id: currentId, pwd: currentPassword });
+      } else {
+        setPowerAutoLoginUserData({ id: '', pwd: '' });
+      }
+      
       const data = await response.json();
       const cookies = parseCookie(data.cookie);
       
@@ -35,7 +50,7 @@ function Login() {
       const data = await response.json();
     }
 
-  }, [currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, setUser]);
+  }, [currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, setUser, setPowerAutoLoginUserData, isPowerAutoLogin]);
 
   
   const autoLogin = useCallback(async () => {
@@ -79,6 +94,10 @@ function Login() {
     }, 1000);
   }, []);
 
+  useEffect(() => {
+    powerAutoLogin();
+  }, [powerAutoLogin]);
+
 // 자동로그인 체크박스
   return (
     <form className="flex flex-col items-center justify-center h-screen gap-4" onSubmit={handleLogin} >
@@ -89,6 +108,13 @@ function Login() {
       <div className="flex flex-row items-center justify-center gap-4">
         <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={user?.isAutoLogin === undefined ? false : user.isAutoLogin } onChange={(e) => setUser((prev:User) => ({...prev, isAutoLogin:e.target.checked}))} />
         <label htmlFor="autoLogin">자동로그인</label>
+      </div>
+      <div className="flex flex-row items-center justify-center gap-4">
+        <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={isPowerAutoLogin} onChange={(e) => setIsPowerAutoLogin(e.target.checked)} />
+        <label htmlFor="autoLogin">강력 자동로그인</label>
+        <Tooltip text="강력 자동로그인은 로컬스토리지를 사용하여 자동으로 로그인을 합니다." position="bottom" delay={10}>
+          <span className="text-gray-500 text-sm w-5 h-5 flex items-center justify-center rounded-full bg-gray-200">?</span>
+        </Tooltip>
       </div>
     </form>
   );
