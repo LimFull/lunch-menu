@@ -9,6 +9,9 @@ import { usePowerAutoLogin } from "../hooks/usePowerAutoLogin";
 import { usePowerAutoLoginContext } from "../context/powerAutoLogin";
 
 interface MenuItem {
+    conerDvCd:string;
+    conerNm:string;
+    mnuSeq:string;
     mealNm: string;
     dispNm: string;
     imgPath: string;
@@ -30,7 +33,7 @@ export default function Menu() {
     const { isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLoginLocal, setPowerAutoLoginUserDataLocal } = usePowerAutoLogin();
     
   
-    const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4)
+    const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4).toSorted((a: MenuItem, b: MenuItem)=> Number(a?.conerNm.slice(0,1)) - Number(b?.conerNm.slice(0,1)));
 console.log('lunchMenus', lunchMenus);
 
     useEffect(() => {
@@ -111,7 +114,10 @@ console.log('lunchMenus', lunchMenus);
                 lunchMenus?.map((v: MenuItem)=> (
                   <div key={v?.dispNm} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex flex-col items-start text-left">
-                      <h3 className="text-lg font-semibold mb-3 text-gray-800">{v?.dispNm}</h3>
+                      <div>
+                        <div className="text-sm text-gray-500 mb-1">{v?.conerNm}</div>
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">{v?.dispNm}</h3>
+                      </div>
                       <Image 
                         src={`${v?.imgPath ? `https://hcafe.hgreenfood.com${v.imgPath}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png'}`} 
                         alt={v?.dispNm} 

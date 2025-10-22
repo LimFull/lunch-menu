@@ -112,7 +112,7 @@ function Login() {
       <div className="flex flex-row items-center justify-center gap-4">
         <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={isPowerAutoLogin} onChange={(e) => setIsPowerAutoLogin(e.target.checked)} />
         <label htmlFor="autoLogin">강력 자동로그인</label>
-        <Tooltip text="강력 자동로그인은 로컬스토리지를 사용하여 자동으로 로그인을 합니다." position="bottom" delay={10}>
+        <Tooltip text="강력 자동로그인은 쿠키를 사용하여 자동으로 로그인을 합니다." position="bottom" delay={10}>
           <span className="text-gray-500 text-sm w-5 h-5 flex items-center justify-center rounded-full bg-gray-200">?</span>
         </Tooltip>
       </div>
