@@ -60,9 +60,5 @@ export function usePowerAutoLogin() {
     }
   }, []);
 
-
-  
-
-
   return { powerAutoLogin:handleAutoLogin, isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLogin, setIsPowerAutoLoginLocal, setPowerAutoLoginUserData, setPowerAutoLoginUserDataLocal };
 }

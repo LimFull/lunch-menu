@@ -123,7 +123,7 @@ console.log('lunchMenus', lunchMenus);
                         alt={v?.dispNm} 
                         width={200} 
                         height={200}
-                        className="rounded-lg object-cover mb-3"
+                        className="rounded-lg object-cover mb-3 min-w-full"
                       />
                       <p className="text-lg font-medium mb-4">{`${v?.totCaloryQt} kcal`}</p>
                       <MenuDetail menu={v} />
