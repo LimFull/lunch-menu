@@ -12,7 +12,7 @@
   "dependencies": {
     "@types/js-cookie": "^3.0.6",
     "js-cookie": "^3.0.5",
-    "next": "15.5.2",
+    "next": "16.0.10",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
