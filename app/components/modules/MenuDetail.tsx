@@ -80,11 +80,11 @@ function MenuDetail({  menu }: Props) {
     return (
         <div className="w-full">
             <div>
-                <p>{`탄수화물: ${totalNutrition.carboQt.toFixed(1)}g`}</p>
-                <p>{`나트륨: ${totalNutrition.natrmQt.toFixed(1)} mg`}</p>
-                <p>{`단백질: ${totalNutrition.protnQt.toFixed(1)}g`}</p>
-                <p>{`지방: ${totalNutrition.lipidQt.toFixed(1)}g`}</p>
-                <p>{`당류: ${totalNutrition.sgrsQt.toFixed(1)}g`}</p>
+                <p className="text-gray-800">{`탄수화물: ${totalNutrition.carboQt.toFixed(1)}g`}</p>
+                <p className="text-gray-800">{`나트륨: ${totalNutrition.natrmQt.toFixed(1)} mg`}</p>
+                <p className="text-gray-800">{`단백질: ${totalNutrition.protnQt.toFixed(1)}g`}</p>
+                <p className="text-gray-800">{`지방: ${totalNutrition.lipidQt.toFixed(1)}g`}</p>
+                <p className="text-gray-800">{`당류: ${totalNutrition.sgrsQt.toFixed(1)}g`}</p>
             </div>
         <div className="mt-2">
             <button

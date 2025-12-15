@@ -108,7 +108,7 @@ console.log('lunchMenus', lunchMenus);
         
         {menuData && (
           <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">오늘의 메뉴</h2>
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">오늘의 메뉴</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {
                 lunchMenus?.map((v: MenuItem)=> (
@@ -125,7 +125,7 @@ console.log('lunchMenus', lunchMenus);
                         height={200}
                         className="rounded-lg object-cover mb-3 min-w-full"
                       />
-                      <p className="text-lg font-medium mb-4">{`${v?.totCaloryQt} kcal`}</p>
+                      <p className="text-lg font-medium mb-4 text-gray-800">{`${v?.totCaloryQt} kcal`}</p>
                       <MenuDetail menu={v} />
                     </div>
                   </div>
