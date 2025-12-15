@@ -2,6 +2,7 @@
 
 import { User, UserContext } from "@/app/context/user";
 import { useEffect, useLayoutEffect, useState } from "react";
+import ErrorBoundary from "./ErrorBoundary";
 
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>({});
@@ -21,9 +22,11 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
   
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
+    <ErrorBoundary fallback={<div>에러가 발생했습니다. 잠시 후 다시 시도해주세요.</div>}>
+      <UserContext.Provider value={{ user, setUser }}>
+        {children}
+      </UserContext.Provider>
+    </ErrorBoundary>
   );
 }
 

@@ -33,7 +33,6 @@ function Login() {
       body: JSON.stringify({ id: currentId, password: currentPassword, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal }),
     });
     
-
     if (response.ok) {
       if (isPowerAutoLogin) {
         setPowerAutoLoginUserData({ id: currentId, pwd: currentPassword });

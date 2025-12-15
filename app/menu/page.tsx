@@ -30,7 +30,7 @@ export default function Menu() {
     const [error, setError] = useState<string | null>(null);
     const { user, setUser } = useUserContext();
     const router = useRouter();
-    const { isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLoginLocal, setPowerAutoLoginUserDataLocal } = usePowerAutoLogin();
+    const { isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLoginLocal,  setPowerAutoLoginUserDataLocal } = usePowerAutoLogin();
     
   
     const lunchMenus = menuData?.dataSets?.menuList?.filter((v: MenuItem)=> v?.mealNm === "중식")?.filter((v: MenuItem, i: number)=> i<4).toSorted((a: MenuItem, b: MenuItem)=> Number(a?.conerNm.slice(0,1)) - Number(b?.conerNm.slice(0,1)));
@@ -38,7 +38,9 @@ console.log('lunchMenus', lunchMenus);
 
     useEffect(() => {
         if (!user.wmonid || !user.mblctfSessionidPrd) {
-          throw new Error('login first');
+          console.error("login first");
+          router.replace('/');
+          return;
         }
       
         // API 호출 함수
