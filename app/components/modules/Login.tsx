@@ -19,49 +19,42 @@ function Login() {
   const router = useRouter();
   const autoLoginRef = useRef(false);
 
-  console.log("isPowerAutoLogin", isPowerAutoLogin);
-  
   const handleLogin = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
 
-    console.log("isPowerAutoLogin", isPowerAutoLogin, currentId, currentPassword);
-
-    
     const response = await fetch('/api/login', {
       method: 'POST',
 
       body: JSON.stringify({ id: currentId, password: currentPassword, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal }),
     });
-    
+
     if (response.ok) {
       if (isPowerAutoLogin) {
         setPowerAutoLoginUserData({ id: currentId, pwd: currentPassword });
       } else {
         setPowerAutoLoginUserData({ id: '', pwd: '' });
       }
-      
+
       const data = await response.json();
       const cookies = parseCookie(data.cookie);
-      
+
       setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:currentId, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, appInfo:cookies?.appInfo?.value??prev.appInfo }));
       router.push('/menu');
-    } else { 
-      const data = await response.json();
     }
 
-  }, [currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, setUser, setPowerAutoLoginUserData, isPowerAutoLogin]);
+  }, [currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, setUser, setPowerAutoLoginUserData, isPowerAutoLogin, router]);
 
-  
+
   const autoLogin = useCallback(async () => {
     if (user.isAutoLogin && !autoLoginRef.current) {
       if (!user.id || !user.wmonid) {
         return;
       }
       autoLoginRef.current = true;
-      
+
       const response = await fetch('/api/autoLogin', {
         method: 'POST',
-        body: JSON.stringify({ id: currentId, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal, wmonid:user.wmonid }),
+        body: JSON.stringify({ id: user.id, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal, wmonid:user.wmonid }),
       });
 
 
@@ -72,19 +65,16 @@ function Login() {
         setUser((prev:User) => ({...prev, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, wmonid:cookies?.WMONID?.value??prev.wmonid, appInfo:cookies?.appInfo?.value??prev.appInfo }));
         router.push('/menu');
       }
-      else { 
-        const data = await response.json();
-      }
 
       return;
     }
-  }, [user.id, user.isAutoLogin, currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, user.wmonid, setUser]);
+  }, [user.id, user.isAutoLogin, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, user.wmonid, setUser, router]);
 
   useEffect(() => {
     if (!isInitial.current) {
       autoLogin();
     }
-    
+
   }, [user.isAutoLogin]);
 
   useEffect(() => {
@@ -97,7 +87,6 @@ function Login() {
     powerAutoLogin();
   }, [powerAutoLogin]);
 
-// 자동로그인 체크박스
   return (
     <form className="flex flex-col items-center justify-center h-screen gap-4" onSubmit={handleLogin} >
       <h1>Hcafeteria Menu</h1>

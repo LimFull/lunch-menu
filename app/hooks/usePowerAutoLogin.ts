@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { PowerAutoLoginUserData } from "../types/power-auto-login";
 import useUserContext from "./useUserContext";
 import { parseCookie } from "../utils/cookie";
@@ -9,19 +9,17 @@ import { useRouter } from "next/navigation";
 import { usePowerAutoLoginContext } from "../context/powerAutoLogin";
 import Cookies from 'js-cookie';
 
-
-
 export function usePowerAutoLogin() {
     const { setUser } = useUserContext();
-    const { isPowerAutoLogin, setIsPowerAutoLogin, powerAutoLoginUserData,setPowerAutoLoginUserData } = usePowerAutoLoginContext();
+    const { isPowerAutoLogin, setIsPowerAutoLogin: setIsPowerAutoLoginContext } = usePowerAutoLoginContext();
     const router = useRouter();
 
   useEffect(() => {
     const isPowerAutoLoginLocal = Cookies.get('isPowerAutoLogin');
     if (isPowerAutoLoginLocal === 'true') {
-      setIsPowerAutoLogin(true);
+      setIsPowerAutoLoginContext(true);
     }
-  }, []);
+  }, [setIsPowerAutoLoginContext]);
 
   const handleAutoLogin = useCallback(async () => {
     const isPowerAutoLoginLocal = Cookies.get('isPowerAutoLogin');
@@ -36,12 +34,12 @@ export function usePowerAutoLogin() {
 
       body: JSON.stringify({ id: powerLoginUserDataLocal.id, password: powerLoginUserDataLocal.pwd }),
     });
-    
+
 
     if (response.ok) {
       const data = await response.json();
       const cookies = parseCookie(data.cookie);
-      
+
       setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:powerLoginUserDataLocal.id, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, appInfo:cookies?.appInfo?.value??prev.appInfo }));
       router.push('/menu');
     } else {
@@ -50,24 +48,24 @@ export function usePowerAutoLogin() {
       Cookies.remove('powerAutoLoginUserData');
     }
 
-  }, [ setUser]);
+  }, [setUser, router, setIsPowerAutoLoginContext]);
 
-
-  const setIsPowerAutoLoginLocal = useCallback((isPowerAutoLogin: boolean) => {
-    if (isPowerAutoLogin) {
+  const setIsPowerAutoLogin = useCallback((value: boolean) => {
+    setIsPowerAutoLoginContext(value);
+    if (value) {
       Cookies.set('isPowerAutoLogin', 'true', { expires: undefined });
     } else {
       Cookies.remove('isPowerAutoLogin');
     }
-  }, []);
+  }, [setIsPowerAutoLoginContext]);
 
-  const setPowerAutoLoginUserDataLocal = useCallback((powerAutoLoginUserData: PowerAutoLoginUserData) => {
-    if (powerAutoLoginUserData.id && powerAutoLoginUserData.pwd) {
-      Cookies.set('powerAutoLoginUserData', JSON.stringify(powerAutoLoginUserData), { expires: undefined });
+  const setPowerAutoLoginUserData = useCallback((data: PowerAutoLoginUserData) => {
+    if (data.id && data.pwd) {
+      Cookies.set('powerAutoLoginUserData', JSON.stringify(data), { expires: undefined });
     } else {
       Cookies.remove('powerAutoLoginUserData');
     }
   }, []);
 
-  return { powerAutoLogin:handleAutoLogin, isPowerAutoLogin, powerAutoLoginUserData, setIsPowerAutoLogin, setIsPowerAutoLoginLocal, setPowerAutoLoginUserData, setPowerAutoLoginUserDataLocal };
+  return { powerAutoLogin: handleAutoLogin, isPowerAutoLogin, setIsPowerAutoLogin, setPowerAutoLoginUserData };
 }
