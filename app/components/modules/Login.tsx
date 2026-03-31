@@ -105,10 +105,6 @@ function Login() {
       <input type="password" placeholder="Password" className="border border-gray-300 p-2 rounded-md" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
       <button className="bg-blue-500 text-white p-2 rounded-md" onClick={() => {handleLogin()}}>Login</button>
       <div className="flex flex-row items-center justify-center gap-4">
-        <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={user?.isAutoLogin === undefined ? false : user.isAutoLogin } onChange={(e) => setUser((prev:User) => ({...prev, isAutoLogin:e.target.checked}))} />
-        <label htmlFor="autoLogin">자동로그인</label>
-      </div>
-      <div className="flex flex-row items-center justify-center gap-4">
         <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={isPowerAutoLogin} onChange={(e) => setIsPowerAutoLogin(e.target.checked)} />
         <label htmlFor="autoLogin">강력 자동로그인</label>
         <Tooltip text="강력 자동로그인은 쿠키를 사용하여 자동으로 로그인을 합니다." position="bottom" delay={10}>

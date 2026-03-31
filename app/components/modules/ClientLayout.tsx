@@ -16,7 +16,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
     const user = localStorage.getItem('user');
     const parsedUser = JSON.parse(user??'');
 
-    if (user) { setUser((prev) => ({...prev, ...parsedUser, osDvCd:parsedUser.osDvCd??prev.osDvCd??'I', userCurrAppVer:parsedUser.userCurrAppVer??prev.userCurrAppVer??'1.8.6'}));
+    if (user) { setUser((prev) => ({...prev, ...parsedUser, isAutoLogin:true, osDvCd:parsedUser.osDvCd??prev.osDvCd??'I', userCurrAppVer:parsedUser.userCurrAppVer??prev.userCurrAppVer??'1.8.6'}));
     }
   }, []);
   
