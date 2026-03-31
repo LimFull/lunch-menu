@@ -71,7 +71,7 @@ console.log('lunchMenus', lunchMenus);
             console.error('API 호출 오류:', error);
             setUser({});
             setTimeout(() => {
-              router.replace('/');
+              router.replace('/?error=true');
             })
           }
         };

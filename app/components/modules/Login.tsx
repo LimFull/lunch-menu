@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import useUserContext from "@/app/hooks/useUserContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { parseCookie } from "@/app/utils/cookie";
 import { User } from "@/app/context/user";
@@ -15,12 +15,15 @@ function Login() {
   const { powerAutoLogin, isPowerAutoLogin, setIsPowerAutoLogin, setPowerAutoLoginUserData } = usePowerAutoLogin();
   const [currentId, setCurrentId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
   const isInitial = useRef(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const autoLoginRef = useRef(false);
 
   const handleLogin = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+    setLoginError(false);
 
     const response = await fetch('/api/login', {
       method: 'POST',
@@ -28,19 +31,23 @@ function Login() {
       body: JSON.stringify({ id: currentId, password: currentPassword, osDvCd:user.osDvCd, userCurrAppVer:user.userCurrAppVer, mobiPhTrmlId:user.mobiPhTrmlId, trmlTokenVal:user.trmlTokenVal }),
     });
 
-    if (response.ok) {
-      if (isPowerAutoLogin) {
-        setPowerAutoLoginUserData({ id: currentId, pwd: currentPassword });
-      } else {
-        setPowerAutoLoginUserData({ id: '', pwd: '' });
-      }
+    const data = await response.json();
 
-      const data = await response.json();
-      const cookies = parseCookie(data.cookie);
-
-      setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:currentId, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, appInfo:cookies?.appInfo?.value??prev.appInfo }));
-      router.push('/menu');
+    if (!response.ok || data?.data?.errorCode !== 0) {
+      setLoginError(true);
+      return;
     }
+
+    if (isPowerAutoLogin) {
+      setPowerAutoLoginUserData({ id: currentId, pwd: currentPassword });
+    } else {
+      setPowerAutoLoginUserData({ id: '', pwd: '' });
+    }
+
+    const cookies = parseCookie(data.cookie);
+
+    setUser((prev:User) => ({...prev, trmlTokenVal:data.trmlTokenVal, osDvCd:data.osDvCd, userCurrAppVer:data.userCurrAppVer, mobiPhTrmlId:data.mobiPhTrmlId, id:currentId, wmonid:cookies?.WMONID?.value??prev.wmonid, mblctfSessionidPrd:cookies?.MBLCTF_SESSIONID_PRD?.value??prev.mblctfSessionidPrd, appInfo:cookies?.appInfo?.value??prev.appInfo }));
+    router.push('/menu');
 
   }, [currentId, currentPassword, user.osDvCd, user.userCurrAppVer, user.mobiPhTrmlId, user.trmlTokenVal, setUser, setPowerAutoLoginUserData, isPowerAutoLogin, router]);
 
@@ -84,6 +91,12 @@ function Login() {
   }, []);
 
   useEffect(() => {
+    if (searchParams.get('error')) {
+      setLoginError(true);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     powerAutoLogin();
   }, [powerAutoLogin]);
 
@@ -92,6 +105,12 @@ function Login() {
       <h1>Hcafeteria Menu</h1>
       <input type="text" placeholder="ID" className="border border-gray-300 p-2 rounded-md" value={currentId} onChange={(e) => setCurrentId(e.target.value)} />
       <input type="password" placeholder="Password" className="border border-gray-300 p-2 rounded-md" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+      {loginError && (
+        <p className="text-red-500 text-sm text-center">
+          로그인에 실패했습니다.<br />
+          Hcafeteria 아이디를 사용해주세요.
+        </p>
+      )}
       <button className="bg-blue-500 text-white p-2 rounded-md" onClick={() => {handleLogin()}}>Login</button>
       <div className="flex flex-row items-center justify-center gap-4">
         <input type="checkbox" className="border border-gray-300 p-2 rounded-md" checked={isPowerAutoLogin} onChange={(e) => setIsPowerAutoLogin(e.target.checked)} />
